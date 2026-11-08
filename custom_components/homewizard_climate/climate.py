@@ -140,13 +140,19 @@ class HomeWizardClimateEntity(ClimateEntity):
     @property
     def preset_mode(self):
         """Return preset mode."""
+        self._logger.debug(
+            "preset_mode: mode=%s, isHEATER=%s, isDEHUMID=%s",
+            self._device_web_socket.last_state.mode,
+            self._isHEATER,
+            self._isDEHUMID,
+        )
         if self._isDEHUMID or self._isAIRCOOLER or self._isFAN:
             return self._device_web_socket.last_state.mode
         if self._isHEATER:
             mode = self._device_web_socket.last_state.mode
-            if mode == "low":
+            if mode == "low" or mode == "normal":
                 return PRESET_ECO
-            elif mode == "high":
+            elif mode == "high" or mode == "boost":
                 return PRESET_BOOST
         raise NotImplementedError()
 
